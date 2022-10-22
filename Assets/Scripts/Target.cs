@@ -5,6 +5,8 @@ using UnityEngine;
 public class Target : MonoBehaviour
 {
     private Rigidbody targetRigidbody;
+    private GameManager gameManager;
+    public ParticleSystem explosionParticle;
 
     private int minPowerUp = 1200;
     private int maxPowerUp = 1900;
@@ -13,9 +15,12 @@ public class Target : MonoBehaviour
     private float xRange = 4.0f;
     private float ySpawnPos = -1.0f;
 
+    public int pointValue;
+
     void Start()
     {
         targetRigidbody = GetComponent<Rigidbody>();
+        gameManager = GameObject.Find("Game Manager").GetComponent<GameManager>();
 
         //fly force
         targetRigidbody.AddForce(VectorUpWithRandomForce(),ForceMode.Impulse);
@@ -35,6 +40,8 @@ public class Target : MonoBehaviour
     private void OnMouseDown()
     {
         Destroy(gameObject);
+        Instantiate(explosionParticle, transform.position, explosionParticle.transform.rotation);
+        gameManager.UpdateScore(pointValue);
     }
 
     private void OnTriggerEnter(Collider other)
