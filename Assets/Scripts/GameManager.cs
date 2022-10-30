@@ -13,6 +13,9 @@ public class GameManager : MonoBehaviour
     public TextMeshProUGUI gameOverText;
     public GameObject titleScreen;
     public Button restartButton;
+    private AudioSource audioSource;
+
+    public Slider volumeSlider;
 
     private float spawnRate = 1.0f;
     private int score;
@@ -22,31 +25,40 @@ public class GameManager : MonoBehaviour
 
     //Pause
     public GameObject pauseScreen;
-    private bool paused;
+    public bool paused = false;
 
-
+    private void Start()
+    {
+        audioSource = FindObjectOfType<AudioSource>();
+        volumeSlider.value = audioSource.volume;
+    }
     void ChangePause()
     {
-        if (!paused)
+        if (Input.GetKeyDown(KeyCode.P) && isGameActive)
         {
-            paused = true;
+            paused = !paused;
+        }
+        if (paused)
+        {
             pauseScreen.SetActive(true);
             Time.timeScale = 0;
+            audioSource.Pause();
+
         }
         else
         {
-            paused = false;
             pauseScreen.SetActive(false);
             Time.timeScale = 1;
+            audioSource.UnPause();
+
+
         }
     }
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.P))
-        {
-            ChangePause();
-        }
+        ChangePause();
+       
     }
 
     IEnumerator SpawnTarget()
